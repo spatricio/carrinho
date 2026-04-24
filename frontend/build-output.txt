@@ -1,0 +1,22 @@
+
+> task-manager-ui@1.0.0 build
+> ng build
+
+- Building...
+
+Application bundle generation failed. [26.294 seconds]
+
+X [ERROR] TS2322: Type '"Pendente" | "Concluída" | "Concluida"' is not assignable to type '"Pendente" | "Concluída"'.
+  Type '"Concluida"' is not assignable to type '"Pendente" | "Concluída"'. Did you mean '"Concluída"'? [plugin angular-compiler]
+
+    src/app/app.component.ts:97:6:
+      97 │       status: tarefa.status
+         ╵       ~~~~~~
+
+  The expected type comes from property 'status' which is declared here on type 'TarefaPayload'
+
+    src/app/models/tarefa.model.ts:13:2:
+      13 │   status: 'Pendente' | 'Concluída';
+         ╵   ~~~~~~
+
+

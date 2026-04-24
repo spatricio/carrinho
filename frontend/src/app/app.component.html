@@ -1,0 +1,138 @@
+<main class="dashboard">
+  <section class="hero panel">
+    <p class="eyebrow">Task Manager</p>
+    <h1>Painel de Tarefas</h1>
+    <p class="subtitle">Organize suas tarefas com clareza e foco no que importa hoje.</p>
+
+    <div class="progress-wrap" aria-label="Progresso geral">
+      <div class="progress-meta">
+        <span>Conclusao geral</span>
+        <strong>{{ percentualConclusao }}%</strong>
+      </div>
+      <div class="progress-track">
+        <span class="progress-fill" [style.width.%]="percentualConclusao"></span>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <article class="kpi-card">
+        <p class="kpi-label">Total</p>
+        <strong class="kpi-value">{{ totalTarefas }}</strong>
+      </article>
+      <article class="kpi-card">
+        <p class="kpi-label">Pendentes</p>
+        <strong class="kpi-value">{{ totalPendentes }}</strong>
+      </article>
+      <article class="kpi-card">
+        <p class="kpi-label">Concluídas</p>
+        <strong class="kpi-value">{{ totalConcluidas }}</strong>
+      </article>
+      <article class="kpi-card accent">
+        <p class="kpi-label">Progresso</p>
+        <strong class="kpi-value">{{ percentualConclusao }}%</strong>
+      </article>
+    </div>
+  </section>
+
+  <section class="grid-layout">
+    <section class="panel form-panel">
+      <div class="section-title">
+        <h2>{{ editandoId ? 'Editar tarefa' : 'Nova tarefa' }}</h2>
+        <p>Preencha os campos para salvar no seu fluxo.</p>
+      </div>
+
+      <form (ngSubmit)="salvarTarefa()" #tarefaForm="ngForm">
+        <label for="titulo">Titulo *</label>
+        <input
+          id="titulo"
+          name="titulo"
+          type="text"
+          [(ngModel)]="formulario.titulo"
+          maxlength="120"
+          required
+        />
+
+        <label for="descricao">Descricao</label>
+        <textarea
+          id="descricao"
+          name="descricao"
+          rows="3"
+          maxlength="500"
+          [(ngModel)]="formulario.descricao"
+        ></textarea>
+
+        <label for="status">Status</label>
+        <select id="status" name="status" [(ngModel)]="formulario.status">
+          <option value="Pendente">Pendente</option>
+          <option value="Concluída">Concluída</option>
+        </select>
+
+        <div class="actions">
+          <button type="submit" class="btn-primary">{{ editandoId ? 'Atualizar' : 'Cadastrar' }}</button>
+          <button type="button" class="btn-secondary" *ngIf="editandoId" (click)="cancelarEdicao()">
+            Cancelar
+          </button>
+        </div>
+      </form>
+
+      <p class="feedback success" *ngIf="mensagemSucesso">{{ mensagemSucesso }}</p>
+      <p class="feedback error" *ngIf="mensagemErro">{{ mensagemErro }}</p>
+    </section>
+
+    <section class="panel list-panel">
+      <div class="header-row">
+        <div>
+          <h2>Lista de tarefas</h2>
+          <p>Acompanhe e filtre o andamento em tempo real.</p>
+          <p class="table-helper" *ngIf="!carregando">
+            Exibindo {{ tarefasFiltradas.length }} de {{ totalTarefas }} tarefa(s).
+          </p>
+        </div>
+        <label class="filter-group">
+          <span>Filtrar</span>
+          <select [(ngModel)]="filtroStatus" (change)="aplicarFiltro()">
+            <option value="Todos">Todos</option>
+            <option value="Pendente">Pendente</option>
+            <option value="Concluída">Concluída</option>
+          </select>
+        </label>
+      </div>
+
+      <p class="loading" *ngIf="carregando">Carregando tarefas...</p>
+
+      <div class="table-wrap" *ngIf="!carregando && tarefasFiltradas.length > 0">
+        <table>
+          <thead>
+            <tr>
+              <th>Titulo</th>
+              <th>Descricao</th>
+              <th>Status</th>
+              <th>Criacao</th>
+              <th>Acoes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let tarefa of tarefasFiltradas">
+              <td>{{ tarefa.titulo }}</td>
+              <td>{{ tarefa.descricao || 'Sem descricao' }}</td>
+              <td>
+                <span [class]="tarefa.status === 'Concluída' ? 'status done' : 'status pending'">
+                  {{ tarefa.status }}
+                </span>
+              </td>
+              <td>{{ tarefa.dataCriacao | date : 'dd/MM/yyyy HH:mm' }}</td>
+              <td class="row-actions">
+                <button type="button" class="btn-inline" (click)="editarTarefa(tarefa)">Editar</button>
+                <button type="button" class="btn-inline danger" (click)="excluirTarefa(tarefa.id)">Excluir</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="empty-state" *ngIf="!carregando && tarefasFiltradas.length === 0">
+        Nenhuma tarefa encontrada para este filtro.
+      </p>
+    </section>
+  </section>
+</main>

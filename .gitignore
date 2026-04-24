@@ -1,0 +1,15 @@
+# Front-end
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# Back-end
+backend/**/bin/
+backend/**/obj/
+
+# Logs and user files
+*.log
+*.user
+*.suo
+.vs/
+.vscode/
